@@ -1,0 +1,14 @@
+{
+  "name": "food-mcp-api-tests",
+  "version": "1.0.0",
+  "description": "API tests for Food MCP grocery store endpoints",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report",
+    "install-browsers": "playwright install"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}
