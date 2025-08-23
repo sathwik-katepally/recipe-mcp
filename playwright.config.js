@@ -1,4 +1,5 @@
 import { defineConfig } from "@playwright/test";
+import constants from './constants.json';
 
 export default defineConfig({
   testDir: "./tests",
@@ -8,7 +9,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [["html"]],
   use: {
-    baseURL: process.env.BASE_URL || "https://www.citygross.se",
+    baseURL: process.env.BASE_URL || constants.stores.cityGross.api.baseUrl,
     trace: "off",
     screenshot: "off",
   },
@@ -18,7 +19,7 @@ export default defineConfig({
       testMatch: /.*\.api\.spec\.js/,
     },
   ],
-  timeout: 30000,
+  timeout: constants.common.defaultTimeout,
   expect: {
     timeout: 10000,
   },

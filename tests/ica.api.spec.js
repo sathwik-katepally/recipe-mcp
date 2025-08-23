@@ -1,20 +1,13 @@
 import { test, expect } from '@playwright/test';
+import constants from '../constants.json';
 
-const ICA_API_URL = 'https://apimgw-pub.ica.se/sverige/digx/productapi/v1/assortment';
-const API_PARAMS = {
-  accountNumber: '1004579', // ICA Supermarket Sundbyberg store ID
-  channel: 'online'
-};
+const ICA_CONFIG = constants.stores.ica;
+const ICA_API_URL = ICA_CONFIG.api.baseUrl + ICA_CONFIG.api.endpoints.assortment;
+const API_PARAMS = ICA_CONFIG.api.defaultParams;
 
 test.describe('ICA API Tests', () => {
   test('should return assortment data successfully', async ({ request }) => {
-    const headers = {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Referer': 'https://www.ica.se/erbjudanden/ica-supermarket-sundbyberg-1004579/',
-      'Origin': 'https://www.ica.se'
-    };
+    const headers = ICA_CONFIG.api.headers;
 
     const url = new URL(ICA_API_URL);
     Object.entries(API_PARAMS).forEach(([key, value]) => {
@@ -35,13 +28,7 @@ test.describe('ICA API Tests', () => {
   });
 
   test('should handle POST request with empty body', async ({ request }) => {
-    const headers = {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Referer': 'https://www.ica.se/erbjudanden/ica-supermarket-sundbyberg-1004579/',
-      'Origin': 'https://www.ica.se'
-    };
+    const headers = ICA_CONFIG.api.headers;
 
     const url = new URL(ICA_API_URL);
     Object.entries(API_PARAMS).forEach(([key, value]) => {
@@ -58,13 +45,7 @@ test.describe('ICA API Tests', () => {
   });
 
   test('should validate required headers are present', async ({ request }) => {
-    const headers = {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Referer': 'https://www.ica.se/erbjudanden/ica-supermarket-sundbyberg-1004579/',
-      'Origin': 'https://www.ica.se'
-    };
+    const headers = ICA_CONFIG.api.headers;
 
     const url = new URL(ICA_API_URL);
     Object.entries(API_PARAMS).forEach(([key, value]) => {
@@ -102,7 +83,7 @@ test.describe('ICA API Tests', () => {
     const response = await request.post(url.toString(), { 
       headers,
       data: {},
-      timeout: 30000
+      timeout: ICA_CONFIG.api.timeout
     });
     
     // Should handle invalid store IDs gracefully
@@ -110,13 +91,7 @@ test.describe('ICA API Tests', () => {
   });
 
   test('should handle request with timeout', async ({ request }) => {
-    const headers = {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Referer': 'https://www.ica.se/erbjudanden/ica-supermarket-sundbyberg-1004579/',
-      'Origin': 'https://www.ica.se'
-    };
+    const headers = ICA_CONFIG.api.headers;
 
     const url = new URL(ICA_API_URL);
     Object.entries(API_PARAMS).forEach(([key, value]) => {
@@ -126,20 +101,14 @@ test.describe('ICA API Tests', () => {
     const response = await request.post(url.toString(), { 
       headers,
       data: {},
-      timeout: 30000
+      timeout: ICA_CONFIG.api.timeout
     });
     
     expect(response.status()).toBeLessThan(500);
   });
 
   test('should return response within reasonable time', async ({ request }) => {
-    const headers = {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Referer': 'https://www.ica.se/erbjudanden/ica-supermarket-sundbyberg-1004579/',
-      'Origin': 'https://www.ica.se'
-    };
+    const headers = ICA_CONFIG.api.headers;
 
     const url = new URL(ICA_API_URL);
     Object.entries(API_PARAMS).forEach(([key, value]) => {
