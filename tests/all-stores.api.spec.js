@@ -1,57 +1,28 @@
 import { test, expect } from "@playwright/test";
+import constants from '../constants.json';
 
 test.describe("All Grocery Stores API Health Check", () => {
   const stores = [
     {
-      name: "City Gross",
-      url: "https://www.citygross.se/api/v1/Loop54/category/2930/products",
-      params: {
-        categoryName: "Veckans erbjudanden",
-        currentWeekDiscountOnly: true,
-        skip: 0,
-        take: 10,
-      },
-      method: "GET",
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept: "application/json",
-        Referer: "https://www.citygross.se/",
-      },
+      name: constants.stores.cityGross.name,
+      url: constants.stores.cityGross.api.baseUrl + constants.stores.cityGross.api.endpoints.weeklyOffers,
+      params: { ...constants.stores.cityGross.api.defaultParams, take: 10 },
+      method: constants.stores.cityGross.api.method,
+      headers: constants.stores.cityGross.api.headers,
     },
     {
-      name: "Willys",
-      url: "https://www.willys.se/search/campaigns/offline",
-      params: {
-        q: "2258",
-        type: "PERSONAL_GENERAL",
-        page: 0,
-        size: 10,
-      },
-      method: "GET",
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept: "application/json",
-      },
+      name: constants.stores.willys.name,
+      url: constants.stores.willys.api.baseUrl + constants.stores.willys.api.endpoints.campaigns,
+      params: { ...constants.stores.willys.api.defaultParams, size: 10 },
+      method: constants.stores.willys.api.method,
+      headers: constants.stores.willys.api.headers,
     },
     {
-      name: "ICA",
-      url: "https://apimgw-pub.ica.se/sverige/digx/productapi/v1/assortment",
-      params: {
-        accountNumber: "1004579",
-        channel: "online",
-      },
-      method: "POST",
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Referer:
-          "https://www.ica.se/erbjudanden/ica-supermarket-sundbyberg-1004579/",
-        Origin: "https://www.ica.se",
-      },
+      name: constants.stores.ica.name,
+      url: constants.stores.ica.api.baseUrl + constants.stores.ica.api.endpoints.assortment,
+      params: constants.stores.ica.api.defaultParams,
+      method: constants.stores.ica.api.method,
+      headers: constants.stores.ica.api.headers,
     },
   ];
 
@@ -69,7 +40,7 @@ test.describe("All Grocery Stores API Health Check", () => {
           });
           response = await request.get(url.toString(), {
             headers: store.headers,
-            timeout: 15000,
+            timeout: constants.common.defaultTimeout,
           });
         } else {
           Object.entries(store.params).forEach(([key, value]) => {
@@ -78,7 +49,7 @@ test.describe("All Grocery Stores API Health Check", () => {
           response = await request.post(url.toString(), {
             headers: store.headers,
             data: {},
-            timeout: 15000,
+            timeout: constants.common.defaultTimeout,
           });
         }
 
@@ -128,7 +99,7 @@ test.describe("All Grocery Stores API Health Check", () => {
           });
           await request.get(url.toString(), {
             headers: store.headers,
-            timeout: 30000,
+            timeout: constants.common.defaultTimeout,
           });
         } else {
           Object.entries(store.params).forEach(([key, value]) => {
@@ -137,7 +108,7 @@ test.describe("All Grocery Stores API Health Check", () => {
           await request.post(url.toString(), {
             headers: store.headers,
             data: {},
-            timeout: 30000,
+            timeout: constants.common.defaultTimeout,
           });
         }
       } catch (error) {

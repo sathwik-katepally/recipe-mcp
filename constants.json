@@ -1,0 +1,84 @@
+{
+  "stores": {
+    "cityGross": {
+      "name": "City Gross",
+      "id": "citygross",
+      "api": {
+        "baseUrl": "https://www.citygross.se",
+        "endpoints": {
+          "weeklyOffers": "/api/v1/Loop54/category/2930/products"
+        },
+        "defaultParams": {
+          "categoryName": "Veckans erbjudanden",
+          "currentWeekDiscountOnly": true,
+          "skip": 0,
+          "take": 50
+        },
+        "headers": {
+          "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "Accept": "application/json",
+          "Referer": "https://www.citygross.se/"
+        },
+        "method": "GET",
+        "timeout": 30000
+      }
+    },
+    "willys": {
+      "name": "Willys",
+      "id": "willys",
+      "api": {
+        "baseUrl": "https://www.willys.se",
+        "endpoints": {
+          "campaigns": "/search/campaigns/offline"
+        },
+        "defaultParams": {
+          "q": "2258",
+          "type": "PERSONAL_GENERAL",
+          "page": 0,
+          "size": 50
+        },
+        "headers": {
+          "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "Accept": "application/json"
+        },
+        "method": "GET",
+        "timeout": 30000
+      },
+      "storeInfo": {
+        "defaultStore": "2258",
+        "location": "Stockholm Fridhemsplan"
+      }
+    },
+    "ica": {
+      "name": "ICA Supermarket Sundbyberg",
+      "id": "ica_sundbyberg_1004579",
+      "api": {
+        "baseUrl": "https://apimgw-pub.ica.se",
+        "endpoints": {
+          "assortment": "/sverige/digx/productapi/v1/assortment"
+        },
+        "defaultParams": {
+          "accountNumber": "1004579",
+          "channel": "online"
+        },
+        "headers": {
+          "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Referer": "https://www.ica.se/erbjudanden/ica-supermarket-sundbyberg-1004579/",
+          "Origin": "https://www.ica.se"
+        },
+        "method": "POST",
+        "timeout": 30000
+      },
+      "storeInfo": {
+        "accountNumber": "1004579",
+        "storeName": "ICA Supermarket Sundbyberg",
+        "location": "Sundbyberg"
+      }
+    }
+  },
+  "common": {
+    "defaultTimeout": 30000
+  }
+}

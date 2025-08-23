@@ -1,20 +1,13 @@
 import { test, expect } from '@playwright/test';
+import constants from '../constants.json';
 
-const CITY_GROSS_API_URL = 'https://www.citygross.se/api/v1/Loop54/category/2930/products';
-const API_PARAMS = {
-  categoryName: 'Veckans erbjudanden',
-  currentWeekDiscountOnly: true,
-  skip: 0,
-  take: 50
-};
+const CITY_GROSS_CONFIG = constants.stores.cityGross;
+const CITY_GROSS_API_URL = CITY_GROSS_CONFIG.api.baseUrl + CITY_GROSS_CONFIG.api.endpoints.weeklyOffers;
+const API_PARAMS = CITY_GROSS_CONFIG.api.defaultParams;
 
 test.describe('City Gross API Tests', () => {
   test('should return weekly offers successfully', async ({ request }) => {
-    const headers = {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Accept': 'application/json',
-      'Referer': 'https://www.citygross.se/'
-    };
+    const headers = CITY_GROSS_CONFIG.api.headers;
 
     const url = new URL(CITY_GROSS_API_URL);
     Object.entries(API_PARAMS).forEach(([key, value]) => {
@@ -31,11 +24,7 @@ test.describe('City Gross API Tests', () => {
   });
 
   test('should return valid product structure', async ({ request }) => {
-    const headers = {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Accept': 'application/json',
-      'Referer': 'https://www.citygross.se/'
-    };
+    const headers = CITY_GROSS_CONFIG.api.headers;
 
     const url = new URL(CITY_GROSS_API_URL);
     Object.entries(API_PARAMS).forEach(([key, value]) => {
@@ -59,11 +48,7 @@ test.describe('City Gross API Tests', () => {
   });
 
   test('should handle request with timeout', async ({ request }) => {
-    const headers = {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Accept': 'application/json',
-      'Referer': 'https://www.citygross.se/'
-    };
+    const headers = CITY_GROSS_CONFIG.api.headers;
 
     const url = new URL(CITY_GROSS_API_URL);
     Object.entries(API_PARAMS).forEach(([key, value]) => {
@@ -72,18 +57,14 @@ test.describe('City Gross API Tests', () => {
 
     const response = await request.get(url.toString(), { 
       headers,
-      timeout: 30000
+      timeout: CITY_GROSS_CONFIG.api.timeout
     });
     
     expect(response.status()).toBeLessThan(500);
   });
 
   test('should return response within reasonable time', async ({ request }) => {
-    const headers = {
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      'Accept': 'application/json',
-      'Referer': 'https://www.citygross.se/'
-    };
+    const headers = CITY_GROSS_CONFIG.api.headers;
 
     const url = new URL(CITY_GROSS_API_URL);
     Object.entries(API_PARAMS).forEach(([key, value]) => {

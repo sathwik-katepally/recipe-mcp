@@ -1,7 +1,13 @@
 from typing import Any, Dict
 import httpx
 import re
+import json
+import os
 from mcp.server.fastmcp import FastMCP
+
+# Load constants from JSON file
+with open(os.path.join(os.path.dirname(__file__), 'constants.json'), 'r') as f:
+    CONSTANTS = json.load(f)
 
 # Initialize FastMCP server
 mcp = FastMCP("food-app-mcp")
@@ -27,14 +33,17 @@ async def get_city_gross_offers() -> Dict[str, Any]:
     
     try:
         async with httpx.AsyncClient() as client:
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'application/json',
-                'Referer': 'https://www.citygross.se/'
-            }
+            city_gross_config = CONSTANTS['stores']['cityGross']
+            headers = city_gross_config['api']['headers']
             
-            url = "https://www.citygross.se/api/v1/Loop54/category/2930/products?categoryName=Veckans%20erbjudanden&currentWeekDiscountOnly=true&skip=0&take=50"
-            response = await client.get(url, headers=headers, timeout=30.0)
+            # Build URL with parameters
+            base_url = city_gross_config['api']['baseUrl'] + city_gross_config['api']['endpoints']['weeklyOffers']
+            params = city_gross_config['api']['defaultParams']
+            
+            # Build query string
+            query_params = '&'.join([f"{k}={v}" for k, v in params.items()])
+            url = f"{base_url}?{query_params}"
+            response = await client.get(url, headers=headers, timeout=city_gross_config['api']['timeout'] / 1000.0)
             data = response.json()
             
             items = []
@@ -67,17 +76,18 @@ async def get_city_gross_offers() -> Dict[str, Any]:
                     items.append(item)
             
             return {
-                "store_name": "City Gross",
-                "store_id": "citygross",
+                "store_name": city_gross_config['name'],
+                "store_id": city_gross_config['id'],
                 "items": items,
                 "item_count": len(items),
                 "source_url": url
             }
             
     except Exception as e:
+        city_gross_config = CONSTANTS['stores']['cityGross']
         return {
-            "store_name": "City Gross",
-            "store_id": "citygross",
+            "store_name": city_gross_config['name'],
+            "store_id": city_gross_config['id'],
             "items": [],
             "item_count": 0,
             "error": str(e),
@@ -89,17 +99,20 @@ async def get_willys_offers() -> Dict[str, Any]:
     
     try:
         async with httpx.AsyncClient() as client:
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'application/json'
-            }
+            willys_config = CONSTANTS['stores']['willys']
+            headers = willys_config['api']['headers']
             
-            # Use discovered real Willys API endpoint for Stockholm Fridhemsplan store
-            url = "https://www.willys.se/search/campaigns/offline?q=2258&type=PERSONAL_GENERAL&page=0&size=50"
+            # Build URL with parameters
+            base_url = willys_config['api']['baseUrl'] + willys_config['api']['endpoints']['campaigns']
+            params = willys_config['api']['defaultParams']
+            
+            # Build query string
+            query_params = '&'.join([f"{k}={v}" for k, v in params.items()])
+            url = f"{base_url}?{query_params}"
             
             items = []
             try:
-                response = await client.get(url, headers=headers, timeout=30.0)
+                response = await client.get(url, headers=headers, timeout=willys_config['api']['timeout'] / 1000.0)
                 if response.status_code == 200:
                     data = response.json()
                     
@@ -159,8 +172,8 @@ async def get_willys_offers() -> Dict[str, Any]:
                 working_url = None
             
             return {
-                "store_name": "Willys",
-                "store_id": "willys",
+                "store_name": willys_config['name'],
+                "store_id": willys_config['id'],
                 "items": items,
                 "item_count": len(items),
                 "source_url": working_url or "API endpoint failed",
@@ -168,9 +181,10 @@ async def get_willys_offers() -> Dict[str, Any]:
             }
             
     except Exception as e:
+        willys_config = CONSTANTS['stores']['willys']
         return {
-            "store_name": "Willys",
-            "store_id": "willys",
+            "store_name": willys_config['name'],
+            "store_id": willys_config['id'],
             "items": [],
             "item_count": 0,
             "error": str(e),
@@ -182,25 +196,17 @@ async def get_ica_offers() -> Dict[str, Any]:
     
     try:
         async with httpx.AsyncClient() as client:
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Referer': 'https://www.ica.se/erbjudanden/ica-supermarket-sundbyberg-1004579/',
-                'Origin': 'https://www.ica.se'
-            }
+            ica_config = CONSTANTS['stores']['ica']
+            headers = ica_config['api']['headers']
             
-            # Use the real ICA API endpoint for Sundbyberg store (ID: 1004579)
-            url = "https://apimgw-pub.ica.se/sverige/digx/productapi/v1/assortment"
-            params = {
-                'accountNumber': '1004579',  # ICA Supermarket Sundbyberg store ID
-                'channel': 'online'
-            }
+            # Use the real ICA API endpoint for Sundbyberg store
+            url = ica_config['api']['baseUrl'] + ica_config['api']['endpoints']['assortment']
+            params = ica_config['api']['defaultParams']
             
             items = []
             
             try:
-                response = await client.post(url, headers=headers, params=params, json={}, timeout=30.0)
+                response = await client.post(url, headers=headers, params=params, json={}, timeout=ica_config['api']['timeout'] / 1000.0)
                 if response.status_code == 200:
                     data = response.json()
                     
@@ -256,24 +262,24 @@ async def get_ica_offers() -> Dict[str, Any]:
                             }
                             items.append(item)
                 
-                working_url = f"{url}?accountNumber=1004579&channel=online"
+                working_url = f"{url}?accountNumber={params['accountNumber']}&channel={params['channel']}"
             except Exception as e:
                 working_url = None
-                error_detail = str(e)
             
             return {
-                "store_name": "ICA Supermarket Sundbyberg",
-                "store_id": "ica_sundbyberg_1004579",
+                "store_name": ica_config['name'],
+                "store_id": ica_config['id'],
                 "items": items,
                 "item_count": len(items),
                 "source_url": working_url or "Real ICA API endpoint failed",
-                "note": f"Data from real ICA API for Sundbyberg store" if items else "No offers found from real ICA API"
+                "note": f"Data from real ICA API for {ica_config['storeInfo']['location']} store" if items else "No offers found from real ICA API"
             }
             
     except Exception as e:
+        ica_config = CONSTANTS['stores']['ica']
         return {
-            "store_name": "ICA Supermarket Sundbyberg",
-            "store_id": "ica_sundbyberg_1004579",
+            "store_name": ica_config['name'],
+            "store_id": ica_config['id'],
             "items": [],
             "item_count": 0,
             "error": str(e),
