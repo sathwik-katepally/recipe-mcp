@@ -8,6 +8,9 @@
     "test:report": "playwright show-report",
     "install-browsers": "playwright install"
   },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "devDependencies": {
     "@playwright/test": "^1.40.0"
   }
