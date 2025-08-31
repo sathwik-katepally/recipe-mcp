@@ -4,8 +4,25 @@ A Model Context Protocol (MCP) server for fetching grocery offers from Swedish s
 
 ## Installation
 
+1. Download the latest `.whl` file from [Releases](https://github.com/sathwik-katepally/recipe-mcp/releases)
+2. Install with pip:
+
 ```bash
-pip install recipe-mcp
+pip install recipe_mcp-0.1.2-py3-none-any.whl
+```
+
+## Claude Desktop Setup
+
+Add to your Claude Desktop MCP configuration file:
+
+```json
+{
+  "mcpServers": {
+    "recipe-mcp": {
+      "command": "recipe-mcp"
+    }
+  }
+}
 ```
 
 ## Usage
