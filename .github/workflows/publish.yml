@@ -9,11 +9,12 @@ on:
 
 jobs:
   publish:
-    name: Publish to GitHub Package Registry
+    name: Build and Publish Package
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+      id-token: write
 
     steps:
       - name: Checkout code
@@ -32,10 +33,10 @@ jobs:
       - name: Build package
         run: python -m build
 
-      - name: Publish to GitHub Package Registry
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
         env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          twine upload --repository-url https://upload.pypi.org/legacy/ dist/* 2>/dev/null || \
-          twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
