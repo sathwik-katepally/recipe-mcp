@@ -1,10 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "mcp-tutorial"
+name = "recipe-mcp"
 version = "0.1.0"
-description = "Add your description here"
+description = "A Model Context Protocol (MCP) server for fetching grocery offers from Swedish supermarkets"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.8"
+authors = [
+    {name = "Sathwik Katepally", email = "sathwik.katepally@example.com"}
+]
+license = {text = "MIT"}
+keywords = ["mcp", "grocery", "offers", "sweden", "api"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
 dependencies = [
     "httpx>=0.28.1",
     "mcp[cli]>=1.12.4",
 ]
+
+[project.urls]
+Homepage = "https://github.com/sathwik-katepally/recipe-mcp"
+Repository = "https://github.com/sathwik-katepally/recipe-mcp.git"
+Issues = "https://github.com/sathwik-katepally/recipe-mcp/issues"
+
+[project.scripts]
+recipe-mcp = "recipe_mcp.foodmcp:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["recipe_mcp*"]
+
+[tool.setuptools.package-data]
+recipe_mcp = ["constants.json"]
